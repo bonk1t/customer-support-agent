@@ -17,8 +17,7 @@ def render_shared_instructions():
         shared = file.read()
     
     shared = shared.format(
-        company_overview=config["company_overview"],
-        target_audience=config["target_audience"]
+        company_overview=config["company_overview"]
     )
     
     return shared

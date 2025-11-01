@@ -1,9 +1,3 @@
-# Background
-
-## Company Overview
+# Company Overview
 
 {company_overview}
-
-## Target Audience
-
-{target_audience}

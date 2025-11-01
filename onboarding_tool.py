@@ -22,26 +22,38 @@ class OnboardingTool(BaseTool):
         "Handles customer inquiries, provides assistance, and ensures excellent customer service.",
         description="Brief description of what your agent does. This will be shown to users."
     )
+    
+    # Model Configuration
+    model: Literal["gpt-4.1", "gpt-5"] = Field(
+        "gpt-5",
+        description="AI model to use. gpt-5 is recommended, but requires verified OpenAI organization."
+    )
+    
+    # Guardrail Configuration
+    enable_guardrail: bool = Field(
+        True,
+        description="Enable input validation to filter out irrelevant questions (e.g., 'help me write an essay'). Recommended for customer-facing deployments.",
+        json_schema_extra={
+            "ui:widget": "checkbox",
+            "ui:title": "Enable Guardrails",
+        },
+    )
 
     # Business Context
     company_name: str = Field(
-        "Agencii AI",
-        description="Your company or product name."
-    )
-    
-    company_overview: str = Field(
-        "Agencii AI is a platform for building reliable AI agents on top of the OpenAI API. Users can create valuable solutions for their own or their clients' businesses.",
-        description="Brief overview of your company, product, or service. This helps the agent understand what you do.",
+        ...,
+        description="Your company or product name.",
         json_schema_extra={
-            "ui:widget": "textarea",
+            "ui:placeholder": "Agencii AI",
         },
     )
     
-    target_audience: str = Field(
-        "Users who want to build AI agents for their own or their clients' businesses, developers, entrepreneurs, and businesses looking to automate with AI.",
-        description="Who are your typical customers? This helps the agent understand user needs.",
+    company_overview: str = Field(
+        ...,
+        description="Brief overview of your company, product, or service. This helps the agent understand what you do.",
         json_schema_extra={
             "ui:widget": "textarea",
+            "ui:placeholder": "Agencii AI is a platform for building reliable AI agents on top of the OpenAI API. Users can create valuable solutions for their own or their clients' businesses.",
         },
     )
     
@@ -129,10 +141,11 @@ if __name__ == "__main__":
     tool = OnboardingTool(
         agent_name="Alex",
         agent_description="Handles customer inquiries, provides assistance, and ensures excellent customer service.",
+        model="gpt-5",
+        enable_guardrail=True,
         output_format="Provide clear, well-structured responses. Use the selected response structure and style. Include relevant examples when helpful.",
         company_name="Agencii AI",
         company_overview="Agencii AI is a platform for building reliable AI agents on top of the OpenAI API. Users can create valuable solutions for their own or their clients' businesses.",
-        target_audience="Users who want to build AI agents for their own or their clients' businesses, developers, entrepreneurs, and businesses looking to automate with AI.",
         knowledge_files=[],
         openapi_schema="""
         {

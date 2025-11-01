@@ -17,10 +17,15 @@ except ImportError:
     )
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-instructions_path = os.path.join(current_dir, "instructions.md")
 
 def render_instructions():
     """Render instructions with config values"""
+    # Determine which instructions file to use based on whether OpenAPI schema is provided
+    if config.get("openapi_schema"):
+        instructions_path = os.path.join(current_dir, "instructions_openapi.md")
+    else:
+        instructions_path = os.path.join(current_dir, "instructions.md")
+    
     with open(instructions_path, "r") as file:
         instructions = file.read()
     
@@ -73,20 +78,46 @@ def load_openapi_tools():
 # Load OpenAPI tools
 openapi_tools = load_openapi_tools()
 
-# Build agent parameters
-customer_support_agent = Agent(
-    name=config["agent_name"],
-    description=config["agent_description"],
-    instructions=render_instructions(),
-    tools_folder="./tools",
-    files_folder="./files",
-    model="gpt-5",
-    model_settings=ModelSettings(
+# Build agent parameters based on model selection
+agent_params = {
+    "name": config["agent_name"],
+    "description": config["agent_description"],
+    "instructions": render_instructions(),
+    "tools_folder": "./tools",
+    "files_folder": "./files",
+    "model": config.get("model", "gpt-5"),
+    "tools": openapi_tools if openapi_tools else []
+}
+
+# Conditionally add input guardrail
+if config.get("enable_guardrail", True):
+    import sys
+    import importlib.util
+    
+    # Load guardrail module
+    guardrail_path = os.path.join(current_dir, "input_guardrail.py")
+    spec = importlib.util.spec_from_file_location("input_guardrail", guardrail_path)
+    guardrail_module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(guardrail_module)
+    
+    agent_params["input_guardrails"] = [guardrail_module.relevance_guardrail]
+    agent_params["throw_input_guardrail_error"] = False  # Return as agent response
+
+# Conditionally add model settings based on model type
+selected_model = config.get("model", "gpt-5")
+if selected_model == "gpt-5":
+    # gpt-5 uses reasoning
+    agent_params["model_settings"] = ModelSettings(
         reasoning=Reasoning(
             effort="low",
             summary="auto",
         ),
-    ),
-    tools=openapi_tools if openapi_tools else []
-)
+    )
+else:
+    # gpt-4.1 uses temperature instead of reasoning
+    agent_params["model_settings"] = ModelSettings(
+        temperature=0.3
+    )
+
+customer_support_agent = Agent(**agent_params)
 

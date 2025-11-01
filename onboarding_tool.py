@@ -32,7 +32,7 @@ class OnboardingTool(BaseTool):
     # Guardrail Configuration
     enable_guardrail: bool = Field(
         True,
-        description="Enable input validation to filter out irrelevant questions (e.g., 'help me write an essay'). Recommended for customer-facing deployments.",
+        description="Enable input validation to filter out irrelevant questions (e.g., 'help me write an essay'). Uses a smaller Recommended, but increases token usage and latency.",
         json_schema_extra={
             "ui:widget": "checkbox",
             "ui:title": "Enable Guardrails",
@@ -59,7 +59,7 @@ class OnboardingTool(BaseTool):
     
     # Response Format Customization
     output_format: str = Field(
-        "Provide clear, well-structured responses. Use the selected response structure and style. Include relevant examples when helpful.",
+        "- Respond in warm, simple, and friendly language.\n- Keep your responses short and to the point (no more than 5 sentences).\n- Make replies easy to understand.\n- Provide a short example if helpful.\n- Always end with a follow up question the user might want to ask next.",
         description="Specific output format instructions for how the agent should structure its responses.",
         json_schema_extra={
             "ui:widget": "textarea",
@@ -93,7 +93,7 @@ class OnboardingTool(BaseTool):
     # OpenAPI Schema for Support API
     openapi_schema: Optional[str] = Field(
         None,
-        description="Paste your OpenAPI schema (JSON or YAML format) for creating support requests via API.",
+        description="Paste your OpenAPI schema (JSON or YAML format) for creating support requests via API. Make sure to add CUSTOMER_SUPPORT_BEARER_TOKEN as a bearer token in the environment variables below.",
         json_schema_extra={
             "ui:widget": "textarea",
         },

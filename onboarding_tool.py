@@ -56,20 +56,20 @@ class OnboardingTool(BaseTool):
             "ui:placeholder": "Agencii AI is a platform for building reliable AI agents on top of the OpenAI API. Users can create valuable solutions for their own or their clients' businesses.",
         },
     )
-    
-    # Response Format Customization
-    output_format: str = Field(
-        "- Respond in warm, simple, and friendly language.\n- Keep your responses short and to the point (no more than 5 sentences).\n- Make replies easy to understand.\n- Provide a short example if helpful.\n- Always end with a follow up question the user might want to ask next.",
-        description="Specific output format instructions for how the agent should structure its responses.",
-        json_schema_extra={
-            "ui:widget": "textarea",
-        },
-    )
-    
+
     # Support Configuration
     support_contact: Optional[str] = Field(
         None,
         description="Support email, phone number, or contact information for escalations (optional)."
+    )
+    
+    # Response Format Customization
+    output_format: str = Field(
+        "- Respond in warm, simple, and friendly language.\n- Keep your responses short and to the point (no more than 5 sentences).\n- Make replies easy to understand.\n- Always end with a follow up question the user might want to ask next.",
+        description="Specific output format instructions for how the agent should structure its responses.",
+        json_schema_extra={
+            "ui:widget": "textarea",
+        },
     )
     
     # Additional Knowledge

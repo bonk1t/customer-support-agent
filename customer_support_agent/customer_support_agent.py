@@ -53,7 +53,7 @@ def load_openapi_tools():
     schema_content = schema_content.strip()
     
     # Get API key from environment
-    api_key = os.getenv("CUSTOMER_SUPPORT_API_KEY")
+    api_key = os.getenv("CUSTOMER_SUPPORT_BEARER_TOKEN")
     
     try:
         # Prepare headers with Bearer authentication if API key is available

@@ -101,7 +101,7 @@ if config.get("enable_guardrail", True):
     spec.loader.exec_module(guardrail_module)
     
     agent_params["input_guardrails"] = [guardrail_module.relevance_guardrail]
-    agent_params["throw_input_guardrail_error"] = False
+    agent_params["throw_input_guardrail_error"] = True
 
 # Conditionally add model settings based on model type
 selected_model = config.get("model", "gpt-5")
